@@ -97,20 +97,15 @@ func probeCollect() {
 		panic(err.Error())
 	}
 
-	if len(scheduledEvents.Events) >= 1 {
-		for _, event := range scheduledEvents.Events {
-			scheduledEvent.With(prometheus.Labels{"EventID": event.EventId, "EventType": event.EventType, "ResourceType": event.ResourceType, "EventStatus": event.EventStatus, "NotBefore": event.NotBefore}).Set(1)
+	for _, event := range scheduledEvents.Events {
+		scheduledEvent.With(prometheus.Labels{"EventID": event.EventId, "EventType": event.EventType, "ResourceType": event.ResourceType, "EventStatus": event.EventStatus, "NotBefore": event.NotBefore}).Set(1)
 
-			notBefore, err := parseTime(event.NotBefore)
-			if err == nil {
-				scheduledEventCountdown.With(prometheus.Labels{"EventID": event.EventId}).Set(float64(time.Until(notBefore).Seconds()))
-			} else {
-				Logger.Error(fmt.Sprintf("Unable to parse time of eventid \"%v\"", event.EventId), err)
-			}
+		notBefore, err := parseTime(event.NotBefore)
+		if err == nil {
+			scheduledEventCountdown.With(prometheus.Labels{"EventID": event.EventId}).Set(float64(time.Until(notBefore).Seconds()))
+		} else {
+			Logger.Error(fmt.Sprintf("Unable to parse time of eventid \"%v\"", event.EventId), err)
 		}
-	} else {
-		scheduledEvent.With(prometheus.Labels{}).Set(0)
-		scheduledEventCountdown.With(prometheus.Labels{}).Set(0)
 	}
 
 	scheduledDocumentIncarnation.With(prometheus.Labels{}).Set(float64(scheduledEvents.DocumentIncarnation))
