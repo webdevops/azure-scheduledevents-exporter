@@ -11,6 +11,7 @@ import (
 )
 
 type AzureScheduledEventResponse struct {
+	DocumentIncarnation int `json:"DocumentIncarnation"`
 	Events []AzureScheduledEvent `json:"events"`
 }
 
@@ -31,6 +32,15 @@ var (
 		},
 		[]string{},
 	)
+
+	scheduledDocumentIncarnation = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "azure_scheduled_document_incarnation",
+			Help: "Azure ScheduledEvent document incarnation",
+		},
+		[]string{},
+	)
+
 
 	scheduledEvent = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
@@ -64,6 +74,7 @@ var (
 func initMetrics() {
 	// Register the summary and the histogram with Prometheus's default registry.
 	prometheus.MustRegister(scheduledEvent)
+	prometheus.MustRegister(scheduledDocumentIncarnation)
 	prometheus.MustRegister(scheduledEventCount)
 	prometheus.MustRegister(scheduledEventCountdown)
 
@@ -97,6 +108,7 @@ func probeCollect() {
 		}
 	}
 
+	scheduledDocumentIncarnation.With(prometheus.Labels{}).Set(float64(scheduledEvents.DocumentIncarnation))
 	scheduledEventCount.With(prometheus.Labels{}).Set(float64(len(scheduledEvents.Events)))
 }
 
