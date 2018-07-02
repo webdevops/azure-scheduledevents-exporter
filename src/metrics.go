@@ -12,7 +12,7 @@ import (
 
 type AzureScheduledEventResponse struct {
 	DocumentIncarnation int `json:"DocumentIncarnation"`
-	Events []AzureScheduledEvent `json:"events"`
+	Events []AzureScheduledEvent `json:"Events"`
 }
 
 type AzureScheduledEvent struct {
