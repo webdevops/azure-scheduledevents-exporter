@@ -50,14 +50,6 @@ var (
 		[]string{"EventID", "EventType", "ResourceType", "EventStatus", "NotBefore"},
 	)
 
-	scheduledEventCountdown = prometheus.NewGaugeVec(
-		prometheus.GaugeOpts{
-			Name: "azure_scheduled_event_countdown_seconds",
-			Help: "Azure ScheduledEvent countdown",
-		},
-		[]string{"EventID"},
-	)
-
 	timeFormatList = []string{
 		time.RFC3339,
 		time.RFC1123,
@@ -76,7 +68,6 @@ func initMetrics() {
 	prometheus.MustRegister(scheduledEvent)
 	prometheus.MustRegister(scheduledEventDocumentIncarnation)
 	prometheus.MustRegister(scheduledEventCount)
-	prometheus.MustRegister(scheduledEventCountdown)
 
 	go func() {
 		for {
@@ -98,14 +89,15 @@ func probeCollect() {
 	}
 
 	for _, event := range scheduledEvents.Events {
-		scheduledEvent.With(prometheus.Labels{"EventID": event.EventId, "EventType": event.EventType, "ResourceType": event.ResourceType, "EventStatus": event.EventStatus, "NotBefore": event.NotBefore}).Set(1)
-
+		eventValue := float64(1)
 		notBefore, err := parseTime(event.NotBefore)
 		if err == nil {
-			scheduledEventCountdown.With(prometheus.Labels{"EventID": event.EventId}).Set(float64(time.Until(notBefore).Seconds()))
+			eventValue = float64(notBefore.Unix())
 		} else {
 			Logger.Error(fmt.Sprintf("Unable to parse time of eventid \"%v\"", event.EventId), err)
 		}
+
+		scheduledEvent.With(prometheus.Labels{"EventID": event.EventId, "EventType": event.EventType, "ResourceType": event.ResourceType, "EventStatus": event.EventStatus, "NotBefore": event.NotBefore}).Set(eventValue)
 	}
 
 	scheduledEventDocumentIncarnation.With(prometheus.Labels{}).Set(float64(scheduledEvents.DocumentIncarnation))
