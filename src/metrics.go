@@ -79,7 +79,7 @@ func initMetrics() {
 
 func startHttpServer() {
 	http.Handle("/metrics", promhttp.Handler())
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Fatal(http.ListenAndServe(opts.ServerBind, nil))
 }
 
 func probeCollect() {
@@ -87,7 +87,7 @@ func probeCollect() {
 	if err != nil {
 		panic(err.Error())
 	}
-	
+
 	scheduledEvent.Reset()
 
 	for _, event := range scheduledEvents.Events {
