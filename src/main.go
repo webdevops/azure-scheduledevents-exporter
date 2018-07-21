@@ -34,7 +34,7 @@ func main() {
 	Logger = logger.CreateDaemonLogger(0)
 	ErrorLogger = logger.CreateDaemonErrorLogger(0)
 
-	Logger.Messsage("init")
+	Logger.Messsage("Init Azure ScheduledEvents exporter %s", Version)
 
 	u, err := url.Parse(opts.ApiUrl)
 	if err != nil {
@@ -42,10 +42,10 @@ func main() {
 	}
 	opts.apiUrl = u
 
-	Logger.Messsage("starting metrics collection")
+	Logger.Messsage("Starting metrics collection")
 	initMetrics()
 
-	Logger.Messsage("starting http server")
+	Logger.Messsage("Starting http server on %s", opts.ServerBind)
 	startHttpServer()
 }
 

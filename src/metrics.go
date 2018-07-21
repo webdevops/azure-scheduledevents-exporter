@@ -104,7 +104,8 @@ func probeCollect() {
 
 	scheduledEventDocumentIncarnation.With(prometheus.Labels{}).Set(float64(scheduledEvents.DocumentIncarnation))
 	scheduledEventCount.With(prometheus.Labels{}).Set(float64(len(scheduledEvents.Events)))
-	Logger.Println(fmt.Sprintf("Fetched %v scheduled events",len(scheduledEvents.Events)))
+
+	Logger.Messsage("Fetched %v Azure ScheduledEvents",len(scheduledEvents.Events))
 }
 
 func fetchApiUrl() (*AzureScheduledEventResponse, error) {
