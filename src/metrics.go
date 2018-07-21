@@ -96,7 +96,7 @@ func probeCollect() {
 		if err == nil {
 			eventValue = float64(notBefore.Unix())
 		} else {
-			Logger.Error(fmt.Sprintf("Unable to parse time of eventid \"%v\"", event.EventId), err)
+			Logger.Error(fmt.Sprintf("Unable to parse time \"%s\" of eventid \"%v\"", event.NotBefore, event.EventId), err)
 		}
 
 		scheduledEvent.With(prometheus.Labels{"EventID": event.EventId, "EventType": event.EventType, "ResourceType": event.ResourceType, "EventStatus": event.EventStatus, "NotBefore": event.NotBefore}).Set(eventValue)
@@ -104,6 +104,7 @@ func probeCollect() {
 
 	scheduledEventDocumentIncarnation.With(prometheus.Labels{}).Set(float64(scheduledEvents.DocumentIncarnation))
 	scheduledEventCount.With(prometheus.Labels{}).Set(float64(len(scheduledEvents.Events)))
+	Logger.Println(fmt.Sprintf("Fetched %v scheduled events",len(scheduledEvents.Events)))
 }
 
 func fetchApiUrl() (*AzureScheduledEventResponse, error) {
