@@ -23,7 +23,7 @@ var (
 var opts struct {
 	ApiUrl      string `long:"api-url"       env:"APIURL"        description:"Azure ScheduledEvents API URL" default:"http://169.254.169.254/metadata/scheduledevents?api-version=2017-08-01"`
 	apiUrl      *url.URL
-	ScrapeTime  int    `   long:"scrape-time"   env:"SCRAPE_TIME"   description:"Scrape time in seconds"        default:"360"`
+	ScrapeTime  int    `   long:"scrape-time"   env:"SCRAPE_TIME"   description:"Scrape time in seconds"        default:"120"`
 	ServerBind  string `   long:"bind"          env:"SERVER_BIND"   description:"Server address"                default:":8080"`
 }
 
