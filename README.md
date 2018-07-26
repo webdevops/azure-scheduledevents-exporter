@@ -1,6 +1,10 @@
 Azure ScheduledEvents Exporter
 ==============================
 
+[![license](https://img.shields.io/github/license/mblaschke/azure-scheduledevents-exporter.svg)](https://github.com/mblaschke/azure-scheduledevents-exporter/blob/master/LICENSE)
+[![Docker](https://img.shields.io/badge/docker-mblaschke%2Fazure--scheduledevents--exporter-blue.svg?longCache=true&style=flat&logo=docker)](https://hub.docker.com/r/mblaschke/azure-scheduledevents-exporter/)
+[![Docker Build Status](https://img.shields.io/docker/build/mblaschke/azure-scheduledevents-exporter.svg)](https://hub.docker.com/r/mblaschke/azure-scheduledevents-exporter/)
+
 Prometheus exporter for [Azure ScheduledEvents](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/scheduled-events) (planned VM maintenance) from the Azure API.
 
 It fetches informations from `http://169.254.169.254/metadata/scheduledevents?api-version=2017-08-01`
