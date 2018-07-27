@@ -57,9 +57,9 @@ var (
 		time.RFC850,
 	}
 
-	httpClient = &http.Client{
-		Timeout: 30 * time.Second,
-	}
+	httpClient *http.Client
+
+	apiErrorCount = 0
 )
 
 
@@ -69,9 +69,18 @@ func initMetrics() {
 	prometheus.MustRegister(scheduledEventDocumentIncarnation)
 	prometheus.MustRegister(scheduledEventCount)
 
+	apiErrorCount = 0
+
+	// Init http client
+	httpClient = &http.Client{
+		Timeout:  time.Duration(opts.ApiTimeout) * time.Second,
+	}
+
 	go func() {
 		for {
-			probeCollect()
+			go func() {
+				probeCollect()
+			}()
 			time.Sleep(time.Duration(opts.ScrapeTime) * time.Second)
 		}
 	}()
@@ -85,9 +94,18 @@ func startHttpServer() {
 func probeCollect() {
 	scheduledEvents, err := fetchApiUrl()
 	if err != nil {
-		panic(err.Error())
+		apiErrorCount++
+
+		if opts.ApiErrorThreshold <= 0 || apiErrorCount <= opts.ApiErrorThreshold {
+			ErrorLogger.Error("Failed API call:", err)
+			return
+		} else {
+			panic(err.Error())
+		}
 	}
 
+	// reset error count and metrics
+	apiErrorCount = 0
 	scheduledEvent.Reset()
 
 	for _, event := range scheduledEvents.Events {
@@ -96,7 +114,7 @@ func probeCollect() {
 		if err == nil {
 			eventValue = float64(notBefore.Unix())
 		} else {
-			Logger.Error(fmt.Sprintf("Unable to parse time \"%s\" of eventid \"%v\"", event.NotBefore, event.EventId), err)
+			ErrorLogger.Error(fmt.Sprintf("Unable to parse time \"%s\" of eventid \"%v\"", event.NotBefore, event.EventId), err)
 		}
 
 		scheduledEvent.With(prometheus.Labels{"EventID": event.EventId, "EventType": event.EventType, "ResourceType": event.ResourceType, "EventStatus": event.EventStatus, "NotBefore": event.NotBefore}).Set(eventValue)

@@ -3,38 +3,39 @@ package main
 import (
 	"os"
 	"fmt"
-	"github.com/jessevdk/go-flags"
-	"azure-scheduledevents-exporter/src/logger"
 	"net/url"
+	"github.com/jessevdk/go-flags"
 )
 
 const (
 	Author  = "webdevops.io"
-	Version = "0.1.0"
+	Version = "0.2.0"
 )
 
 var (
 	argparser   *flags.Parser
 	args        []string
-	Logger      *logger.DaemonLogger
-	ErrorLogger *logger.DaemonLogger
+	Logger      *DaemonLogger
+	ErrorLogger *DaemonLogger
 )
 
 var opts struct {
-	ApiUrl      string `long:"api-url"       env:"APIURL"        description:"Azure ScheduledEvents API URL" default:"http://169.254.169.254/metadata/scheduledevents?api-version=2017-08-01"`
+	ApiUrl      string `   long:"api-url"             env:"API_URL"       description:"Azure ScheduledEvents API URL" default:"http://169.254.169.254/metadata/scheduledevents?api-version=2017-08-01"`
 	apiUrl      *url.URL
-	ScrapeTime  int    `   long:"scrape-time"   env:"SCRAPE_TIME"   description:"Scrape time in seconds"        default:"120"`
-	ServerBind  string `   long:"bind"          env:"SERVER_BIND"   description:"Server address"                default:":8080"`
+	ApiTimeout  int    `   long:"api-timeout"         env:"API_TIMEOUT"   description:"Azure API timeout (seconds)"   default:":30"`
+	ApiErrorThreshold int `long:"api-error-threshold" env:"API_ERROR_THRESHOLD"   description:"Azure API error threshold (after which app will panic)"   default:"5"`
+	ScrapeTime  int    `   long:"scrape-time"         env:"SCRAPE_TIME"   description:"Scrape time in seconds"        default:"120"`
+	ServerBind  string `   long:"bind"                env:"SERVER_BIND"   description:"Server address"                default:":8080"`
 }
 
 func main() {
 	initArgparser()
 
 	// Init logger
-	Logger = logger.CreateDaemonLogger(0)
-	ErrorLogger = logger.CreateDaemonErrorLogger(0)
+	Logger = CreateDaemonLogger(0)
+	ErrorLogger = CreateDaemonErrorLogger(0)
 
-	Logger.Messsage("Init Azure ScheduledEvents exporter %s", Version)
+	Logger.Messsage("Init Azure ScheduledEvents exporter v%s", Version)
 
 	u, err := url.Parse(opts.ApiUrl)
 	if err != nil {
@@ -43,6 +44,10 @@ func main() {
 	opts.apiUrl = u
 
 	Logger.Messsage("Starting metrics collection")
+	Logger.Messsage("  API URL: %v", opts.ApiUrl)
+	Logger.Messsage("  API timeout: %v", opts.ApiTimeout)
+	Logger.Messsage("  scape time: %v", opts.ScrapeTime)
+	Logger.Messsage("  error threshold: %v", opts.ApiErrorThreshold)
 	initMetrics()
 
 	Logger.Messsage("Starting http server on %s", opts.ServerBind)

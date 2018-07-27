@@ -15,11 +15,13 @@ Configuration
 
 Normally no configuration is needed but can be customized using environment variables.
 
-| Environment variable | DefaultValue                                                              | Description            |
-|----------------------|---------------------------------------------------------------------------|------------------------|
-| `APIURL`             | `http://169.254.169.254/metadata/scheduledevents?api-version=2017-08-01`  | Azure API url          |
-| `SCRAPE_TIME`        | `120`                                                                     | Time between API calls |
-| `SERVER_BIND`        | `:8080`                                                                   | IP/Port binding        |
+| Environment variable   | DefaultValue                                                              | Description                                                       |
+|------------------------|---------------------------------------------------------------------------|-------------------------------------------------------------------|
+| `API_URL`              | `http://169.254.169.254/metadata/scheduledevents?api-version=2017-08-01`  | Azure API url                                                     |
+| `API_TIMEOUT`          | `30`                                                                      | API call timeout                                                  |
+| `API_ERROR_THRESHOLD`  | `5`                                                                       | API error threshold after which app will panic (`-1` for forever) |
+| `SCRAPE_TIME`          | `120`                                                                     | Time between API calls                                            |
+| `SERVER_BIND`          | `:8080`                                                                   | IP/Port binding                                                   |
 
 
 Kubernetes Usage

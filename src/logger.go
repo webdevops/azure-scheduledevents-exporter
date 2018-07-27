@@ -1,4 +1,4 @@
-package logger
+package main
 
 import (
 	"log"
@@ -7,8 +7,8 @@ import (
 )
 
 const (
-	LogPrefix = ""
-	prefixErr = "[ERROR] "
+	LoggerLogPrefix = ""
+	LoggerLogPrefixError = "[ERROR] "
 )
 
 type DaemonLogger struct {
@@ -20,11 +20,11 @@ var (
 )
 
 func CreateDaemonLogger(flags int) *DaemonLogger {
-	return &DaemonLogger{log.New(os.Stdout, LogPrefix, flags)}
+	return &DaemonLogger{log.New(os.Stdout, LoggerLogPrefix, flags)}
 }
 
 func CreateDaemonErrorLogger(flags int) *DaemonLogger {
-	return &DaemonLogger{log.New(os.Stderr, LogPrefix, flags)}
+	return &DaemonLogger{log.New(os.Stderr, LoggerLogPrefix, flags)}
 }
 
 func (l *DaemonLogger) Verbose(message string, sprintf ...interface{}) {
@@ -47,5 +47,5 @@ func (l *DaemonLogger) Messsage(message string, sprintf ...interface{}) {
 
 // Log error object as message
 func (l *DaemonLogger) Error(msg string, err error) {
-	l.Println(fmt.Sprintf("%v%v: %v", prefixErr, msg, err))
+	l.Println(fmt.Sprintf("%v%v: %v", LoggerLogPrefixError, msg, err))
 }
