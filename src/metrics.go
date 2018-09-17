@@ -69,27 +69,17 @@ func setupMetricsCollection() {
 
 	apiErrorCount = 0
 
-	httpTimeout, err := time.ParseDuration(opts.ApiTimeout)
-	if err != nil {
-		panic(err)
-	}
-
 	// Init http client
 	httpClient = &http.Client{
-		Timeout: httpTimeout,
+		Timeout: opts.ApiTimeout,
 	}
 }
 
 func startMetricsCollection() {
-	sleepTime, err := time.ParseDuration(opts.ScrapeTime)
-	if err != nil {
-		panic(err)
-	}
-
 	go func() {
 		for {
 			go probeCollect()
-			time.Sleep(sleepTime)
+			time.Sleep(opts.ScrapeTime)
 		}
 	}()
 }
