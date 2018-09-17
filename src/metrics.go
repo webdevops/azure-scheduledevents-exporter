@@ -41,7 +41,6 @@ var (
 		[]string{},
 	)
 
-
 	scheduledEvent = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
 			Name: "azure_scheduled_event",
@@ -63,8 +62,7 @@ var (
 )
 
 
-func initMetrics() {
-	// Register the summary and the histogram with Prometheus's default registry.
+func setupMetricsCollection() {
 	prometheus.MustRegister(scheduledEvent)
 	prometheus.MustRegister(scheduledEventDocumentIncarnation)
 	prometheus.MustRegister(scheduledEventCount)
@@ -75,12 +73,12 @@ func initMetrics() {
 	httpClient = &http.Client{
 		Timeout:  time.Duration(opts.ApiTimeout) * time.Second,
 	}
+}
 
+func startMetricsCollection() {
 	go func() {
 		for {
-			go func() {
-				probeCollect()
-			}()
+			go probeCollect()
 			time.Sleep(time.Duration(opts.ScrapeTime) * time.Second)
 		}
 	}()
