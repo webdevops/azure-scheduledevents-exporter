@@ -18,9 +18,9 @@ Normally no configuration is needed but can be customized using environment vari
 | Environment variable   | DefaultValue                                                              | Description                                                       |
 |------------------------|---------------------------------------------------------------------------|-------------------------------------------------------------------|
 | `API_URL`              | `http://169.254.169.254/metadata/scheduledevents?api-version=2017-08-01`  | Azure API url                                                     |
-| `API_TIMEOUT`          | `30s`                                                                      | API call timeout                                                  |
+| `API_TIMEOUT`          | `30s` (time.Duration)                                                     | API call timeout                                                  |
 | `API_ERROR_THRESHOLD`  | `5`                                                                       | API error threshold after which app will panic (`-1` for forever) |
-| `SCRAPE_TIME`          | `60s`                                                                     | Time between API calls                                            |
+| `SCRAPE_TIME`          | `1m` (time.Duration)                                                      | Time between API calls                                            |
 | `SERVER_BIND`          | `:8080`                                                                   | IP/Port binding                                                   |
 
 
