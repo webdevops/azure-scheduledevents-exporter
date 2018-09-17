@@ -9,7 +9,7 @@ import (
 
 const (
 	Author  = "webdevops.io"
-	Version = "0.3.0"
+	Version = "0.3.1"
 )
 
 var (
@@ -22,12 +22,13 @@ var (
 var opts struct {
 	// general options
 	ServerBind  string `   long:"bind"                env:"SERVER_BIND"   description:"Server address"                default:":8080"`
-	ScrapeTime  int    `   long:"scrape-time"         env:"SCRAPE_TIME"   description:"Scrape time in seconds"        default:"60"`
+	ScrapeTime  string `   long:"scrape-time"         env:"SCRAPE_TIME"   description:"Scrape time in seconds"        default:"60s"`
+	Verbose []bool        `long:"verbose" short:"v"   env:"VERBOSE"       description:"Verbose mode"`
 
 	// Api options
 	ApiUrl      string `   long:"api-url"             env:"API_URL"       description:"Azure ScheduledEvents API URL" default:"http://169.254.169.254/metadata/scheduledevents?api-version=2017-08-01"`
 	apiUrl      *url.URL
-	ApiTimeout  int    `   long:"api-timeout"         env:"API_TIMEOUT"   description:"Azure API timeout (seconds)"   default:":30"`
+	ApiTimeout  string    `long:"api-timeout"         env:"API_TIMEOUT"   description:"Azure API timeout (seconds)"   default:"30s"`
 	ApiErrorThreshold int `long:"api-error-threshold" env:"API_ERROR_THRESHOLD"   description:"Azure API error threshold (after which app will panic)"   default:"5"`
 }
 
@@ -37,6 +38,9 @@ func main() {
 	// Init logger
 	Logger = CreateDaemonLogger(0)
 	ErrorLogger = CreateDaemonErrorLogger(0)
+
+	// set verbosity
+	Verbose = len(opts.Verbose) >= 1
 
 	Logger.Messsage("Init Azure ScheduledEvents exporter v%s (written by %v)", Version, Author)
 
@@ -73,5 +77,4 @@ func initArgparser() {
 			os.Exit(1)
 		}
 	}
-
 }
