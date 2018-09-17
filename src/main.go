@@ -3,9 +3,10 @@ package main
 import (
 	"os"
 	"fmt"
+	"time"
+	"strings"
 	"net/url"
 	"github.com/jessevdk/go-flags"
-	"time"
 )
 
 const (
@@ -28,7 +29,6 @@ var opts struct {
 
 	// Api options
 	ApiUrl      string `       long:"api-url"             env:"API_URL"       description:"Azure ScheduledEvents API URL" default:"http://169.254.169.254/metadata/scheduledevents?api-version=2017-08-01"`
-	apiUrl      *url.URL
 	ApiTimeout  time.Duration `long:"api-timeout"         env:"API_TIMEOUT"   description:"Azure API timeout (seconds)"   default:"30s"`
 	ApiErrorThreshold int `    long:"api-error-threshold" env:"API_ERROR_THRESHOLD"   description:"Azure API error threshold (after which app will panic)"   default:"5"`
 }
@@ -44,12 +44,6 @@ func main() {
 	Verbose = len(opts.Verbose) >= 1
 
 	Logger.Messsage("Init Azure ScheduledEvents exporter v%s (written by %v)", Version, Author)
-
-	u, err := url.Parse(opts.ApiUrl)
-	if err != nil {
-		panic(err)
-	}
-	opts.apiUrl = u
 
 	Logger.Messsage("Starting metrics collection")
 	Logger.Messsage("  API URL: %v", opts.ApiUrl)
@@ -77,5 +71,27 @@ func initArgparser() {
 			argparser.WriteHelp(os.Stdout)
 			os.Exit(1)
 		}
+	}
+
+	// --api-url
+	apiUrl, err := url.Parse(opts.ApiUrl)
+	if err != nil {
+		fmt.Println(err)
+		fmt.Println()
+		argparser.WriteHelp(os.Stdout)
+		os.Exit(1)
+	}
+
+	// validate --api-url scheme
+	switch (strings.ToLower(apiUrl.Scheme)) {
+	case "http":
+		break;
+	case "https":
+		break;
+	default:
+		fmt.Println("ApiURL scheme not allowed (must be http or https)")
+		fmt.Println()
+		argparser.WriteHelp(os.Stdout)
+		os.Exit(1)
 	}
 }
