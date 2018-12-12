@@ -1,9 +1,9 @@
 package main
 
 import (
-	"time"
 	"log"
 	"fmt"
+	"time"
 	"net/http"
 	"encoding/json"
 	"github.com/prometheus/client_golang/prometheus"
@@ -46,7 +46,7 @@ var (
 			Name: "azure_scheduled_event",
 			Help: "Azure ScheduledEvent",
 		},
-		[]string{"EventID", "EventType", "ResourceType", "EventStatus", "NotBefore"},
+		[]string{"EventID", "EventType", "ResourceType", "Resource", "EventStatus", "NotBefore"},
 	)
 
 	timeFormatList = []string{
@@ -115,7 +115,13 @@ func probeCollect() {
 			ErrorLogger.Error(fmt.Sprintf("Unable to parse time \"%s\" of eventid \"%v\"", event.NotBefore, event.EventId), err)
 		}
 
-		scheduledEvent.With(prometheus.Labels{"EventID": event.EventId, "EventType": event.EventType, "ResourceType": event.ResourceType, "EventStatus": event.EventStatus, "NotBefore": event.NotBefore}).Set(eventValue)
+		if len(event.Resources) > 1 {
+			for _, resource := range event.Resources {
+				scheduledEvent.With(prometheus.Labels{"EventID": event.EventId, "EventType": event.EventType, "ResourceType": event.ResourceType, "Resource": resource, "EventStatus": event.EventStatus, "NotBefore": event.NotBefore}).Set(eventValue)
+			}
+		} else {
+			scheduledEvent.With(prometheus.Labels{"EventID": event.EventId, "EventType": event.EventType, "ResourceType": event.ResourceType, "Resource": "", "EventStatus": event.EventStatus, "NotBefore": event.NotBefore}).Set(eventValue)
+		}
 	}
 
 	scheduledEventDocumentIncarnation.With(prometheus.Labels{}).Set(float64(scheduledEvents.DocumentIncarnation))
