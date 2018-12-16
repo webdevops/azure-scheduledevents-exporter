@@ -25,17 +25,9 @@ type AzureScheduledEvent struct {
 }
 
 var (
-	scheduledEventCount = prometheus.NewGaugeVec(
-		prometheus.GaugeOpts{
-			Name: "azure_scheduled_event_count",
-			Help: "Azure ScheduledEvent count",
-		},
-		[]string{},
-	)
-
 	scheduledEventDocumentIncarnation = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
-			Name: "azure_scheduled_event_document_incarnation",
+			Name: "azure_scheduledevent_document_incarnation",
 			Help: "Azure ScheduledEvent document incarnation",
 		},
 		[]string{},
@@ -43,10 +35,10 @@ var (
 
 	scheduledEvent = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
-			Name: "azure_scheduled_event",
+			Name: "azure_scheduledevent_event",
 			Help: "Azure ScheduledEvent",
 		},
-		[]string{"EventID", "EventType", "ResourceType", "Resource", "EventStatus", "NotBefore"},
+		[]string{"eventID", "eventType", "resourceType", "resource", "eventStatus", "notBefore"},
 	)
 
 	timeFormatList = []string{
@@ -65,7 +57,6 @@ var (
 func setupMetricsCollection() {
 	prometheus.MustRegister(scheduledEvent)
 	prometheus.MustRegister(scheduledEventDocumentIncarnation)
-	prometheus.MustRegister(scheduledEventCount)
 
 	apiErrorCount = 0
 
@@ -113,19 +104,35 @@ func probeCollect() {
 			eventValue = float64(notBefore.Unix())
 		} else {
 			ErrorLogger.Error(fmt.Sprintf("Unable to parse time \"%s\" of eventid \"%v\"", event.NotBefore, event.EventId), err)
+			eventValue = 0
 		}
 
-		if len(event.Resources) > 1 {
+		if len(event.Resources) >= 1 {
 			for _, resource := range event.Resources {
-				scheduledEvent.With(prometheus.Labels{"EventID": event.EventId, "EventType": event.EventType, "ResourceType": event.ResourceType, "Resource": resource, "EventStatus": event.EventStatus, "NotBefore": event.NotBefore}).Set(eventValue)
+				scheduledEvent.With(
+					prometheus.Labels{
+						"eventID": event.EventId,
+						"eventType": event.EventType,
+						"resourceType": event.ResourceType,
+						"resource": resource,
+						"eventStatus": event.EventStatus,
+						"notBefore": event.NotBefore,
+					}).Set(eventValue)
 			}
 		} else {
-			scheduledEvent.With(prometheus.Labels{"EventID": event.EventId, "EventType": event.EventType, "ResourceType": event.ResourceType, "Resource": "", "EventStatus": event.EventStatus, "NotBefore": event.NotBefore}).Set(eventValue)
+			scheduledEvent.With(
+				prometheus.Labels{
+					"eventID": event.EventId,
+					"eventType": event.EventType,
+					"resourceType": event.ResourceType,
+					"resource": "",
+					"eventStatus": event.EventStatus,
+					"notBefore": event.NotBefore,
+				}).Set(eventValue)
 		}
 	}
 
 	scheduledEventDocumentIncarnation.With(prometheus.Labels{}).Set(float64(scheduledEvents.DocumentIncarnation))
-	scheduledEventCount.With(prometheus.Labels{}).Set(float64(len(scheduledEvents.Events)))
 
 	Logger.Verbose("Fetched %v Azure ScheduledEvents",len(scheduledEvents.Events))
 }

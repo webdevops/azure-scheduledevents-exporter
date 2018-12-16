@@ -24,6 +24,15 @@ Normally no configuration is needed but can be customized using environment vari
 | `SERVER_BIND`          | `:8080`                                                                   | IP/Port binding                                                   |
 
 
+Metrics
+-------
+
+| Metric                                      | Description                                                                           |
+|---------------------------------------------|---------------------------------------------------------------------------------------|
+| `azure_scheduledevent_document_incarnation` | Document incarnation number (version)                                                 |
+| `azure_scheduledevent_event`                | Fetched events from API                                                               |
+
+
 Kubernetes Usage
 ----------------
 

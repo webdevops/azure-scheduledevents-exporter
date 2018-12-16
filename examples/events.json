@@ -5,6 +5,22 @@
             "EventId": "602d9444-d2cd-49c7-8624-8643e7171291",
             "EventType": "Reboot",
             "ResourceType": "VirtualMachine",
+            "Resources": [],
+            "EventStatus": "Scheduled",
+            "NotBefore": "Mon, 19 Sep 2019 18:29:47 GMT"
+        },
+        {
+            "EventId": "602d9444-d2cd-49c7-8624-8643e7171291",
+            "EventType": "Reboot",
+            "ResourceType": "VirtualMachine",
+            "Resources": ["Foobar"],
+            "EventStatus": "Scheduled",
+            "NotBefore": "Mon, 19 Sep 2019 18:29:47 GMT"
+        },
+        {
+            "EventId": "602d9444-d2cd-49c7-8624-8643e7171291",
+            "EventType": "Reboot",
+            "ResourceType": "VirtualMachine",
             "Resources": ["FrontEnd_IN_0", "BackEnd_IN_0"],
             "EventStatus": "Scheduled",
             "NotBefore": "Mon, 19 Sep 2019 18:29:47 GMT"
