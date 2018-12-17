@@ -99,12 +99,15 @@ func probeCollect() {
 
 	for _, event := range scheduledEvents.Events {
 		eventValue := float64(1)
-		notBefore, err := parseTime(event.NotBefore)
-		if err == nil {
-			eventValue = float64(notBefore.Unix())
-		} else {
-			ErrorLogger.Error(fmt.Sprintf("Unable to parse time \"%s\" of eventid \"%v\"", event.NotBefore, event.EventId), err)
-			eventValue = 0
+
+		if event.NotBefore != "" {
+			notBefore, err := parseTime(event.NotBefore)
+			if err == nil {
+				eventValue = float64(notBefore.Unix())
+			} else {
+				ErrorLogger.Error(fmt.Sprintf("Unable to parse time \"%s\" of eventid \"%v\"", event.NotBefore, event.EventId), err)
+				eventValue = 0
+			}
 		}
 
 		if len(event.Resources) >= 1 {
