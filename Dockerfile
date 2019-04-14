@@ -11,17 +11,12 @@ WORKDIR /go/src/azure-scheduledevents-exporter/src
 COPY ./src /go/src/azure-scheduledevents-exporter/src
 RUN mkdir /app/ \
     && cp -a /tmp/app/vendor ./vendor/ \
-    && cp -a entrypoint.sh /app/ \
-    && chmod 555 /app/entrypoint.sh \
-    && go build -o /app/azure-scheduledevents-exporter
+    && CGO_ENABLED=0 GOOS=linux go build -a -ldflags '-extldflags "-static"' -o /app/azure-scheduledevents-exporter
 
 #############################################
 # FINAL IMAGE
 #############################################
-FROM alpine
-RUN apk add --no-cache \
-        libc6-compat \
-    	ca-certificates
-COPY --from=build /app/ /app/
+FROM scratch
+COPY --from=build /app/azure-scheduledevents-exporter /
 USER 1000
-ENTRYPOINT ["/app/entrypoint.sh"]
+ENTRYPOINT ["/azure-scheduledevents-exporter"]
