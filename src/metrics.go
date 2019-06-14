@@ -147,6 +147,7 @@ func fetchApiUrl() (*AzureScheduledEventResponse, error) {
 	if err != nil {
 		return nil, err
 	}
+	req.Header.Add("Metadata", "true")
 
 	resp, err := httpClient.Do(req)
 	if err != nil {
