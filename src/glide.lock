@@ -1,12 +1,12 @@
 hash: 8fd4df6e29d2bd01837079dd7ce614e63e55fb0f37e3a6ae799d906ff65893d7
-updated: 2019-04-14T18:29:31.76324+02:00
+updated: 2019-06-14T07:30:49.778944+02:00
 imports:
 - name: github.com/beorn7/perks
-  version: e7f67b54abbeac9c40a31de0f81159e4cafebd6a
+  version: 234731a4f01687625231ac651d6b2776e3f3142e
   subpackages:
   - quantile
 - name: github.com/golang/protobuf
-  version: e91709a02e0e8ff8b86b7aa913fdc9ae9498e825
+  version: b285ee9cfc6c881bb20c0d8dc73370ea9b9ec90f
   subpackages:
   - proto
 - name: github.com/jessevdk/go-flags
@@ -16,7 +16,7 @@ imports:
   subpackages:
   - pbutil
 - name: github.com/prometheus/client_golang
-  version: 5a3ec6a883d301737d83860ed604021342ff2144
+  version: 2641b987480bca71fb39738eb8c8b0d577cb1d76
   subpackages:
   - prometheus
   - prometheus/internal
@@ -32,5 +32,7 @@ imports:
   - internal/bitbucket.org/ww/goautoneg
   - model
 - name: github.com/prometheus/procfs
-  version: e22ddced71425e65e388b17b7d0289c5ea77d06e
+  version: 1de2bc567d78f4ff415fd103412f7e5ec9e8876b
+  subpackages:
+  - internal/fs
 testImports: []
