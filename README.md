@@ -19,7 +19,7 @@ Normally no configuration is needed but can be customized using environment vari
 |------------------------|---------------------------------------------------------------------------|-------------------------------------------------------------------|
 | `API_URL`              | `http://169.254.169.254/metadata/scheduledevents?api-version=2017-08-01`  | Azure API url                                                     |
 | `API_TIMEOUT`          | `30s` (time.Duration)                                                     | API call timeout                                                  |
-| `API_ERROR_THRESHOLD`  | `5`                                                                       | API error threshold after which app will panic (`-1` for forever) |
+| `API_ERROR_THRESHOLD`  | `0` (disabled)                                                            | API error threshold after which app will panic (`0` = dislabed)   |
 | `SCRAPE_TIME`          | `1m` (time.Duration)                                                      | Time between API calls                                            |
 | `SERVER_BIND`          | `:8080`                                                                   | IP/Port binding                                                   |
 
@@ -31,6 +31,8 @@ Metrics
 |---------------------------------------------|---------------------------------------------------------------------------------------|
 | `azure_scheduledevent_document_incarnation` | Document incarnation number (version)                                                 |
 | `azure_scheduledevent_event`                | Fetched events from API                                                               |
+| `azure_scheduledevent_request`              | Request histogram (count and request duration)                                        |
+| `azure_scheduledevent_request_error`        | Counter for failed requests                                                           |
 
 
 Kubernetes Usage

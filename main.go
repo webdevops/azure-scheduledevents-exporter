@@ -30,7 +30,7 @@ var opts struct {
 	// Api options
 	ApiUrl      string `       long:"api-url"             env:"API_URL"       description:"Azure ScheduledEvents API URL" default:"http://169.254.169.254/metadata/scheduledevents?api-version=2017-11-01"`
 	ApiTimeout  time.Duration `long:"api-timeout"         env:"API_TIMEOUT"   description:"Azure API timeout (seconds)"   default:"30s"`
-	ApiErrorThreshold int `    long:"api-error-threshold" env:"API_ERROR_THRESHOLD"   description:"Azure API error threshold (after which app will panic)"   default:"5"`
+	ApiErrorThreshold int `    long:"api-error-threshold" env:"API_ERROR_THRESHOLD"   description:"Azure API error threshold (after which app will panic)"   default:"0"`
 }
 
 func main() {
@@ -49,7 +49,11 @@ func main() {
 	Logger.Messsage("  API URL: %v", opts.ApiUrl)
 	Logger.Messsage("  API timeout: %v", opts.ApiTimeout)
 	Logger.Messsage("  scape time: %v", opts.ScrapeTime)
-	Logger.Messsage("  error threshold: %v", opts.ApiErrorThreshold)
+	if opts.ApiErrorThreshold > 0 {
+		Logger.Messsage("  error threshold: %v", opts.ApiErrorThreshold)
+	} else {
+		Logger.Messsage("  error threshold: disabled")
+	}
 	setupMetricsCollection()
 	startMetricsCollection()
 

@@ -41,6 +41,22 @@ var (
 		[]string{"eventID", "eventType", "resourceType", "resource", "eventStatus", "notBefore"},
 	)
 
+	scheduledEventRequest = prometheus.NewHistogramVec(
+		prometheus.HistogramOpts{
+			Name: "azure_scheduledevent_request",
+			Help: "Azure ScheduledEvent requests",
+		},
+		[]string{},
+	)
+
+	scheduledEventRequestError = prometheus.NewCounterVec(
+		prometheus.CounterOpts{
+			Name: "azure_scheduledevent_request_error",
+			Help: "Azure ScheduledEvent failed requests",
+		},
+		[]string{},
+	)
+
 	timeFormatList = []string{
 		time.RFC3339,
 		time.RFC1123,
@@ -57,6 +73,8 @@ var (
 func setupMetricsCollection() {
 	prometheus.MustRegister(scheduledEvent)
 	prometheus.MustRegister(scheduledEventDocumentIncarnation)
+	prometheus.MustRegister(scheduledEventRequest)
+	prometheus.MustRegister(scheduledEventRequestError)
 
 	apiErrorCount = 0
 
@@ -143,22 +161,29 @@ func probeCollect() {
 func fetchApiUrl() (*AzureScheduledEventResponse, error) {
 	ret := &AzureScheduledEventResponse{}
 
+	startTime := time.Now()
 	req, err := http.NewRequest("GET", opts.ApiUrl, nil)
 	if err != nil {
+		scheduledEventRequestError.With(prometheus.Labels{}).Inc()
 		return nil, err
 	}
 	req.Header.Add("Metadata", "true")
 
 	resp, err := httpClient.Do(req)
 	if err != nil {
+		scheduledEventRequestError.With(prometheus.Labels{}).Inc()
 		return nil, err
 	}
 	defer resp.Body.Close()
 
 	err = json.NewDecoder(resp.Body).Decode(&ret)
 	if err != nil {
+		scheduledEventRequestError.With(prometheus.Labels{}).Inc()
 		return nil, err
 	}
+
+	duration := time.Now().Sub(startTime)
+	scheduledEventRequest.With(prometheus.Labels{}).Observe(duration.Seconds())
 
 	return ret, nil
 }
