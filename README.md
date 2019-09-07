@@ -40,7 +40,7 @@ Kubernetes Usage
 
 ```
 ---
-apiVersion: extensions/v1beta1
+apiVersion: app/v1
 kind: DaemonSet
 metadata:
   name: azure-scheduledevents
