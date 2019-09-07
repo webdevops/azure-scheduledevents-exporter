@@ -1,4 +1,4 @@
 /DOCKERFILE
 /example
-/src/vendor
-/src/src
+/vendor
+/azure-scheduledevents-exporter
