@@ -1,6 +1,6 @@
 FROM golang:1.13 as build
 
-WORKDIR /go/src/github.com/webdevops//azure-scheduledevents-exporter
+WORKDIR /go/src/github.com/webdevops/azure-scheduledevents-exporter
 COPY ./ /go/src/github.com/webdevops/azure-scheduledevents-exporter
 RUN go mod download \
     && CGO_ENABLED=0 GOOS=linux go build -a -ldflags '-extldflags "-static"' -o /azure-scheduledevents-exporter \
