@@ -1,4 +1,4 @@
-module azure-scheduledevents-exporter/src
+module github.com/webdevops/azure-scheduledevents-exporter
 
 go 1.13
 
