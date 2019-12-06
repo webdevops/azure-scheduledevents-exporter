@@ -1,12 +1,12 @@
 package main
 
 import (
-	"os"
 	"fmt"
-	"time"
-	"strings"
-	"net/url"
 	"github.com/jessevdk/go-flags"
+	"net/url"
+	"os"
+	"strings"
+	"time"
 )
 
 const (
@@ -23,14 +23,14 @@ var (
 
 var opts struct {
 	// general options
-	ServerBind  string `       long:"bind"                env:"SERVER_BIND"   description:"Server address"                default:":8080"`
-	ScrapeTime  time.Duration `long:"scrape-time"         env:"SCRAPE_TIME"   description:"Scrape time in seconds"        default:"1m"`
-	Verbose []bool `           long:"verbose" short:"v"   env:"VERBOSE"       description:"Verbose mode"`
+	ServerBind string        `long:"bind"                env:"SERVER_BIND"   description:"Server address"                default:":8080"`
+	ScrapeTime time.Duration `long:"scrape-time"         env:"SCRAPE_TIME"   description:"Scrape time in seconds"        default:"1m"`
+	Verbose    []bool        `long:"verbose" short:"v"   env:"VERBOSE"       description:"Verbose mode"`
 
 	// Api options
-	ApiUrl      string `       long:"api-url"             env:"API_URL"       description:"Azure ScheduledEvents API URL" default:"http://169.254.169.254/metadata/scheduledevents?api-version=2017-11-01"`
-	ApiTimeout  time.Duration `long:"api-timeout"         env:"API_TIMEOUT"   description:"Azure API timeout (seconds)"   default:"30s"`
-	ApiErrorThreshold int `    long:"api-error-threshold" env:"API_ERROR_THRESHOLD"   description:"Azure API error threshold (after which app will panic)"   default:"0"`
+	ApiUrl            string        `long:"api-url"             env:"API_URL"       description:"Azure ScheduledEvents API URL" default:"http://169.254.169.254/metadata/scheduledevents?api-version=2017-11-01"`
+	ApiTimeout        time.Duration `long:"api-timeout"         env:"API_TIMEOUT"   description:"Azure API timeout (seconds)"   default:"30s"`
+	ApiErrorThreshold int           `long:"api-error-threshold" env:"API_ERROR_THRESHOLD"   description:"Azure API error threshold (after which app will panic)"   default:"0"`
 }
 
 func main() {
@@ -86,11 +86,11 @@ func initArgparser() {
 	}
 
 	// validate --api-url scheme
-	switch (strings.ToLower(apiUrl.Scheme)) {
+	switch strings.ToLower(apiUrl.Scheme) {
 	case "http":
-		break;
+		break
 	case "https":
-		break;
+		break
 	default:
 		fmt.Println("ApiURL scheme not allowed (must be http or https)")
 		fmt.Println()

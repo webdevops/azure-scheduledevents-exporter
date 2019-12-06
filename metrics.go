@@ -1,27 +1,27 @@
 package main
 
 import (
-	"log"
-	"fmt"
-	"time"
-	"net/http"
 	"encoding/json"
+	"fmt"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"log"
+	"net/http"
+	"time"
 )
 
 type AzureScheduledEventResponse struct {
-	DocumentIncarnation int `json:"DocumentIncarnation"`
-	Events []AzureScheduledEvent `json:"Events"`
+	DocumentIncarnation int                   `json:"DocumentIncarnation"`
+	Events              []AzureScheduledEvent `json:"Events"`
 }
 
 type AzureScheduledEvent struct {
-	EventId string `json:"EventId"`
-	EventType string `json:"EventType"`
-	ResourceType string `json:"ResourceType"`
-	Resources []string `json:"Resources"`
-	EventStatus string `json:"EventStatus"`
-	NotBefore string `json:"NotBefore"`
+	EventId      string   `json:"EventId"`
+	EventType    string   `json:"EventType"`
+	ResourceType string   `json:"ResourceType"`
+	Resources    []string `json:"Resources"`
+	EventStatus  string   `json:"EventStatus"`
+	NotBefore    string   `json:"NotBefore"`
 }
 
 var (
@@ -68,7 +68,6 @@ var (
 
 	apiErrorCount = 0
 )
-
 
 func setupMetricsCollection() {
 	prometheus.MustRegister(scheduledEvent)
@@ -132,30 +131,30 @@ func probeCollect() {
 			for _, resource := range event.Resources {
 				scheduledEvent.With(
 					prometheus.Labels{
-						"eventID": event.EventId,
-						"eventType": event.EventType,
+						"eventID":      event.EventId,
+						"eventType":    event.EventType,
 						"resourceType": event.ResourceType,
-						"resource": resource,
-						"eventStatus": event.EventStatus,
-						"notBefore": event.NotBefore,
+						"resource":     resource,
+						"eventStatus":  event.EventStatus,
+						"notBefore":    event.NotBefore,
 					}).Set(eventValue)
 			}
 		} else {
 			scheduledEvent.With(
 				prometheus.Labels{
-					"eventID": event.EventId,
-					"eventType": event.EventType,
+					"eventID":      event.EventId,
+					"eventType":    event.EventType,
 					"resourceType": event.ResourceType,
-					"resource": "",
-					"eventStatus": event.EventStatus,
-					"notBefore": event.NotBefore,
+					"resource":     "",
+					"eventStatus":  event.EventStatus,
+					"notBefore":    event.NotBefore,
 				}).Set(eventValue)
 		}
 	}
 
 	scheduledEventDocumentIncarnation.With(prometheus.Labels{}).Set(float64(scheduledEvents.DocumentIncarnation))
 
-	Logger.Verbose("Fetched %v Azure ScheduledEvents",len(scheduledEvents.Events))
+	Logger.Verbose("Fetched %v Azure ScheduledEvents", len(scheduledEvents.Events))
 }
 
 func fetchApiUrl() (*AzureScheduledEventResponse, error) {
