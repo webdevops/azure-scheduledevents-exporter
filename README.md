@@ -74,17 +74,16 @@ spec:
           readOnlyRootFilesystem: true
           runAsNonRoot: true
           capabilities:
-            drop:
-              - ALL
+            drop: ['ALL']
         ports:
         - containerPort: 8080
           name: metrics
           protocol: TCP
         resources:
           limits:
-            cpu: 10m
-            memory: 100Mi
+            cpu: 100m
+            memory: 50Mi
           requests:
-            cpu: 10m
-            memory: 100Mi
+            cpu: 1m
+            memory: 50Mi
 ```
