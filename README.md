@@ -22,6 +22,7 @@ Normally no configuration is needed but can be customized using environment vari
 | `API_ERROR_THRESHOLD`  | `0` (disabled)                                                            | API error threshold after which app will panic (`0` = dislabed)   |
 | `SCRAPE_TIME`          | `1m` (time.Duration)                                                      | Time between API calls                                            |
 | `SERVER_BIND`          | `:8080`                                                                   | IP/Port binding                                                   |
+| `METRICS_REQUESTSTATS` | `empty`                                                                   | Enable metric `azure_scheduledevent_request`                      |
 
 
 Metrics
@@ -31,7 +32,7 @@ Metrics
 |---------------------------------------------|---------------------------------------------------------------------------------------|
 | `azure_scheduledevent_document_incarnation` | Document incarnation number (version)                                                 |
 | `azure_scheduledevent_event`                | Fetched events from API                                                               |
-| `azure_scheduledevent_request`              | Request histogram (count and request duration)                                        |
+| `azure_scheduledevent_request`              | Request histogram (count and request duration; disabled by default)                   |
 | `azure_scheduledevent_request_error`        | Counter for failed requests                                                           |
 
 
