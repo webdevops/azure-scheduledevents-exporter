@@ -10,6 +10,9 @@ Prometheus exporter for [Azure ScheduledEvents](https://docs.microsoft.com/en-us
 It fetches informations from `http://169.254.169.254/metadata/scheduledevents?api-version=2017-08-01`
 and exports the parsed information as metric to Prometheus.
 
+
+Hint: Interrested in automatic node draining for Kubernetes for Azure ScheduledEvents? see [azure-scheduledevents-manager](https://github.com/webdevops/azure-scheduledevents-manager)
+
 Configuration
 -------------
 
