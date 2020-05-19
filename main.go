@@ -10,15 +10,17 @@ import (
 )
 
 const (
-	Author  = "webdevops.io"
-	Version = "1.8.0"
+	Author = "webdevops.io"
 )
 
 var (
 	argparser   *flags.Parser
-	args        []string
 	Logger      *DaemonLogger
 	ErrorLogger *DaemonLogger
+
+	// Git version information
+	gitCommit = "<unknown>"
+	gitTag    = "<unknown>"
 )
 
 var opts struct {
@@ -46,7 +48,7 @@ func main() {
 	// set verbosity
 	Verbose = len(opts.Verbose) >= 1
 
-	Logger.Messsage("Init Azure ScheduledEvents exporter v%s (written by %v)", Version, Author)
+	Logger.Messsage("Init Azure ScheduledEvents exporter v%s (%s; by %v)", gitTag, gitCommit, Author)
 
 	Logger.Messsage("Starting metrics collection")
 	Logger.Messsage("  API URL: %v", opts.ApiUrl)

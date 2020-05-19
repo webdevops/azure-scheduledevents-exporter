@@ -18,15 +18,27 @@ Configuration
 
 Normally no configuration is needed but can be customized using environment variables.
 
-| Environment variable   | DefaultValue                                                              | Description                                                       |
-|------------------------|---------------------------------------------------------------------------|-------------------------------------------------------------------|
-| `API_URL`              | `http://169.254.169.254/metadata/scheduledevents?api-version=2017-08-01`  | Azure API url                                                     |
-| `API_TIMEOUT`          | `30s` (time.Duration)                                                     | API call timeout                                                  |
-| `API_ERROR_THRESHOLD`  | `0` (disabled)                                                            | API error threshold after which app will panic (`0` = dislabed)   |
-| `SCRAPE_TIME`          | `1m` (time.Duration)                                                      | Time between API calls                                            |
-| `SERVER_BIND`          | `:8080`                                                                   | IP/Port binding                                                   |
-| `METRICS_REQUESTSTATS` | `empty`                                                                   | Enable metric `azure_scheduledevent_request`                      |
+```
+Usage:
+  azure-scheduledevents-exporter [OPTIONS]
 
+Application Options:
+      --bind=                 Server address (default: :8080) [$SERVER_BIND]
+      --scrape-time=          Scrape time in seconds (default: 1m)
+                              [$SCRAPE_TIME]
+  -v, --verbose               Verbose mode [$VERBOSE]
+      --api-url=              Azure ScheduledEvents API URL (default:
+                              http://169.254.169.254/metadata/scheduledevents?api-version=2017-11-01) [$API_URL]
+      --api-timeout=          Azure API timeout (seconds) (default: 30s)
+                              [$API_TIMEOUT]
+      --api-error-threshold=  Azure API error threshold (after which app will
+                              panic) (default: 0) [$API_ERROR_THRESHOLD]
+      --metrics-requeststats  Enable request stats metrics
+                              [$METRICS_REQUESTSTATS]
+
+Help Options:
+  -h, --help                  Show this help message
+```
 
 Metrics
 -------
