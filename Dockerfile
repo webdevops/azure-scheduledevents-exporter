@@ -18,6 +18,9 @@ RUN ./azure-scheduledevents-exporter --help
 # FINAL IMAGE
 #############################################
 FROM gcr.io/distroless/static
+
+ENV LOG_JSON=1
+
 COPY --from=build /go/src/github.com/webdevops/azure-scheduledevents-exporter/azure-scheduledevents-exporter /
 USER 1000
 ENTRYPOINT ["/azure-scheduledevents-exporter"]

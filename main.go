@@ -3,10 +3,13 @@ package main
 import (
 	"fmt"
 	"github.com/jessevdk/go-flags"
+	log "github.com/sirupsen/logrus"
+	"github.com/webdevops/azure-scheduledevents-exporter/config"
 	"net/url"
 	"os"
+	"path"
+	"runtime"
 	"strings"
-	"time"
 )
 
 const (
@@ -14,55 +17,25 @@ const (
 )
 
 var (
-	argparser   *flags.Parser
-	Logger      *DaemonLogger
-	ErrorLogger *DaemonLogger
+	argparser *flags.Parser
+	opts      config.Opts
 
 	// Git version information
 	gitCommit = "<unknown>"
 	gitTag    = "<unknown>"
 )
 
-var opts struct {
-	// general options
-	ServerBind string        `long:"bind"                env:"SERVER_BIND"   description:"Server address"                default:":8080"`
-	ScrapeTime time.Duration `long:"scrape-time"         env:"SCRAPE_TIME"   description:"Scrape time in seconds"        default:"1m"`
-	Verbose    []bool        `long:"verbose" short:"v"   env:"VERBOSE"       description:"Verbose mode"`
-
-	// Api options
-	ApiUrl            string        `long:"api-url"             env:"API_URL"       description:"Azure ScheduledEvents API URL" default:"http://169.254.169.254/metadata/scheduledevents?api-version=2017-11-01"`
-	ApiTimeout        time.Duration `long:"api-timeout"         env:"API_TIMEOUT"   description:"Azure API timeout (seconds)"   default:"30s"`
-	ApiErrorThreshold int           `long:"api-error-threshold" env:"API_ERROR_THRESHOLD"   description:"Azure API error threshold (after which app will panic)"   default:"0"`
-
-	// metrics
-	MetricsRequestStats bool `long:"metrics-requeststats" env:"METRICS_REQUESTSTATS" description:"Enable request stats metrics"`
-}
-
 func main() {
 	initArgparser()
 
-	// Init logger
-	Logger = CreateDaemonLogger(0)
-	ErrorLogger = CreateDaemonErrorLogger(0)
+	log.Infof("starting Azure ScheduledEvents manager v%s (%s; %s; by %v)", gitTag, gitCommit, runtime.Version(), Author)
+	log.Info(string(opts.GetJson()))
 
-	// set verbosity
-	Verbose = len(opts.Verbose) >= 1
-
-	Logger.Messsage("Init Azure ScheduledEvents exporter v%s (%s; by %v)", gitTag, gitCommit, Author)
-
-	Logger.Messsage("Starting metrics collection")
-	Logger.Messsage("  API URL: %v", opts.ApiUrl)
-	Logger.Messsage("  API timeout: %v", opts.ApiTimeout)
-	Logger.Messsage("  scape time: %v", opts.ScrapeTime)
-	if opts.ApiErrorThreshold > 0 {
-		Logger.Messsage("  error threshold: %v", opts.ApiErrorThreshold)
-	} else {
-		Logger.Messsage("  error threshold: disabled")
-	}
+	log.Infof("starting metrics collection")
 	setupMetricsCollection()
 	startMetricsCollection()
 
-	Logger.Messsage("Starting http server on %s", opts.ServerBind)
+	log.Infof("starting http server on %s", opts.ServerBind)
 	startHttpServer()
 }
 
@@ -79,6 +52,37 @@ func initArgparser() {
 			argparser.WriteHelp(os.Stdout)
 			os.Exit(1)
 		}
+	}
+
+	// verbose level
+	if opts.Logger.Verbose {
+		log.SetLevel(log.DebugLevel)
+	}
+
+	// debug level
+	if opts.Logger.Debug {
+		log.SetReportCaller(true)
+		log.SetLevel(log.TraceLevel)
+		log.SetFormatter(&log.TextFormatter{
+			CallerPrettyfier: func(f *runtime.Frame) (string, string) {
+				s := strings.Split(f.Function, ".")
+				funcName := s[len(s)-1]
+				return funcName, fmt.Sprintf("%s:%d", path.Base(f.File), f.Line)
+			},
+		})
+	}
+
+	// json log format
+	if opts.Logger.LogJson {
+		log.SetReportCaller(true)
+		log.SetFormatter(&log.JSONFormatter{
+			DisableTimestamp: true,
+			CallerPrettyfier: func(f *runtime.Frame) (string, string) {
+				s := strings.Split(f.Function, ".")
+				funcName := s[len(s)-1]
+				return funcName, fmt.Sprintf("%s:%d", path.Base(f.File), f.Line)
+			},
+		})
 	}
 
 	// --api-url

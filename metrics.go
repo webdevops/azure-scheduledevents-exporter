@@ -2,10 +2,9 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"log"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 	"time"
 )
@@ -103,10 +102,10 @@ func probeCollect() {
 		apiErrorCount++
 
 		if opts.ApiErrorThreshold <= 0 || apiErrorCount <= opts.ApiErrorThreshold {
-			ErrorLogger.Error("Failed API call:", err)
+			log.Errorf("failed API call: %v", err)
 			return
 		} else {
-			panic(err.Error())
+			log.Panic(err)
 		}
 	}
 
@@ -122,7 +121,8 @@ func probeCollect() {
 			if err == nil {
 				eventValue = float64(notBefore.Unix())
 			} else {
-				ErrorLogger.Error(fmt.Sprintf("Unable to parse time \"%s\" of eventid \"%v\"", event.NotBefore, event.EventId), err)
+				log.Errorf("failed API call: %v", err)
+				log.Errorf("unable to parse time \"%s\" of eventid \"%v\": %v", event.NotBefore, event.EventId, err)
 				eventValue = 0
 			}
 		}
@@ -154,7 +154,7 @@ func probeCollect() {
 
 	scheduledEventDocumentIncarnation.With(prometheus.Labels{}).Set(float64(scheduledEvents.DocumentIncarnation))
 
-	Logger.Verbose("Fetched %v Azure ScheduledEvents", len(scheduledEvents.Events))
+	log.Debugf("fetched %v Azure ScheduledEvents", len(scheduledEvents.Events))
 }
 
 func fetchApiUrl() (*AzureScheduledEventResponse, error) {
