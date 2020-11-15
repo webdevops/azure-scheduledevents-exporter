@@ -2,8 +2,8 @@ Azure ScheduledEvents Exporter
 ==============================
 
 [![license](https://img.shields.io/github/license/webdevops/azure-scheduledevents-exporter.svg)](https://github.com/webdevops/azure-scheduledevents-exporter/blob/master/LICENSE)
-[![Docker](https://img.shields.io/badge/docker-webdevops%2Fazure--scheduledevents--exporter-blue.svg?longCache=true&style=flat&logo=docker)](https://hub.docker.com/r/webdevops/azure-scheduledevents-exporter/)
-[![Docker Build Status](https://img.shields.io/docker/build/webdevops/azure-scheduledevents-exporter.svg)](https://hub.docker.com/r/webdevops/azure-scheduledevents-exporter/)
+[![DockerHub](https://img.shields.io/badge/DockerHub-webdevops%2Fazure--scheduledevents--exporter-blue)](https://hub.docker.com/r/webdevops/azure-scheduledevents-exporter/)
+[![Quay.io](https://img.shields.io/badge/Quay.io-webdevops%2Fazure--scheduledevents--exporter-blue)](https://quay.io/repository/webdevops/azure-scheduledevents-exporter)
 
 Prometheus exporter for [Azure ScheduledEvents](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/scheduled-events) (planned VM maintenance) from the Azure API.
 

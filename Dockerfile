@@ -9,6 +9,7 @@ RUN go mod download
 
 # Compile
 COPY ./ /go/src/github.com/webdevops/azure-scheduledevents-exporter
+RUN make test
 RUN make lint
 RUN make build
 RUN ./azure-scheduledevents-exporter --help
