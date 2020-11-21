@@ -182,7 +182,7 @@ func fetchApiUrl() (*AzureScheduledEventResponse, error) {
 	}
 
 	if opts.MetricsRequestStats {
-		duration := time.Now().Sub(startTime)
+		duration := time.Since(startTime)
 		scheduledEventRequest.With(prometheus.Labels{}).Observe(duration.Seconds())
 	}
 
